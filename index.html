@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>21st Birthday Special</title>
+  
+  <!-- Font Awesome & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Montserrat:wght@400;700;900&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Three.js for 3D Space Scene -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #0b0c10;
+      color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .section {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 1s ease, visibility 1s ease;
+      z-index: 1;
+    }
+
+    .section.active {
+      opacity: 1;
+      visibility: visible;
+      z-index: 10;
+    }
+
+    /* Navigation Controls */
+    .nav-btn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 700;
+      letter-spacing: 1px;
+      z-index: 9999;
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      background: #ffffff;
+      color: #000;
+      transform: scale(1.05);
+    }
+
+    /* SECTION 1: COUNTDOWN */
+    #sec-1 {
+      background: radial-gradient(circle, #1a1c23 0%, #0b0c10 100%);
+    }
+
+    #age-number {
+      font-size: 15rem;
+      font-weight: 900;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.3s ease;
+      background: linear-gradient(180deg, #ffffff 0%, #888888 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+    }
+
+    #age-number:hover {
+      transform: scale(1.08);
+    }
+
+    .sub-text {
+      letter-spacing: 6px;
+      font-size: 1rem;
+      opacity: 0.6;
+      margin-top: 15px;
+    }
+
+    #fire-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    /* SECTION 2: BALLOONS & WISH */
+    #sec-2 {
+      background: #0f1016;
+    }
+
+    .bday-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      text-align: center;
+      animation: floatText 3s ease-in-out infinite alternate;
+      z-index: 2;
+    }
+
+    @keyframes floatText {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-15px); }
+    }
+
+    .balloon {
+      position: absolute;
+      bottom: -100px;
+      width: 50px;
+      height: 65px;
+      border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+      animation: floatUp 8s linear infinite;
+      z-index: 1;
+    }
+
+    .balloon::after {
+      content: "";
+      position: absolute;
+      bottom: -12px;
+      left: 23px;
+      width: 2px;
+      height: 15px;
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-110vh) rotate(20deg); opacity: 0; }
+    }
+
+    /* SECTION 3: CURVED CAROUSEL */
+    #sec-3 {
+      background: #f4f1ea;
+      color: #222;
+    }
+
+    .carousel-header {
+      position: absolute;
+      top: 10%;
+      left: 10%;
+    }
+
+    .carousel-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+    }
+
+    .carousel-header h2 span {
+      color: #e67e22;
+    }
+
+    .curved-ribbon {
+      display: flex;
+      gap: 20px;
+      transform: rotate(-5deg) translateY(40px);
+      width: 120%;
+      overflow-x: auto;
+      padding: 20px 0;
+      scroll-behavior: smooth;
+    }
+
+    .ribbon-img {
+      width: 180px;
+      height: 240px;
+      object-fit: cover;
+      border-radius: 12px;
+      filter: grayscale(100%);
+      transition: all 0.4s ease;
+      flex-shrink: 0;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+
+    .ribbon-img:hover {
+      filter: grayscale(0%);
+      transform: scale(1.1) translateY(-10px);
+    }
+
+    /* SECTION 4: POLAROID BOARD */
+    #sec-4 {
+      background: #e8e5de;
+      color: #333;
+    }
+
+    .polaroid {
+      position: absolute;
+      width: 180px;
+      background: #fff;
+      padding: 12px 12px 25px 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      cursor: grab;
+      user-select: none;
+      transition: transform 0.2s ease;
+    }
+
+    .polaroid:active {
+      cursor: grabbing;
+      z-index: 999 !important;
+    }
+
+    .polaroid img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .polaroid .caption {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      text-align: center;
+      margin-top: 10px;
+      color: #444;
+    }
+
+    /* SECTION 5: SKETCHBOOK / FLIPBOOK */
+    #sec-5 {
+      background: #111;
+    }
+
+    .book {
+      width: 600px;
+      height: 400px;
+      position: relative;
+      perspective: 1500px;
+    }
+
+    .page {
+      width: 50%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      right: 0;
+      transform-origin: left center;
+      transform-style: preserve-3d;
+      transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
+      cursor: pointer;
+    }
+
+    .page-front, .page-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      backface-visibility: hidden;
+      background: #fdfbf7;
+      color: #222;
+      padding: 25px;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+      border-radius: 0 8px 8px 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .page-back {
+      transform: rotateY(180deg);
+      border-radius: 8px 0 0 8px;
+    }
+
+    .page.flipped {
+      transform: rotateY(-180deg);
+    }
+
+    .scrap-title {
+      font-family: 'Caveat', cursive;
+      font-size: 2.2rem;
+      margin-bottom: 15px;
+    }
+
+    /* SECTION 6: 3D SPACE GALAXY */
+    #sec-6 {
+      background: #000;
+    }
+
+    #space-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="nav-btn" id="next-btn" onclick="nextSection()">Next Stage &#x2192;</button>
+
+  <!-- SECTION 1: COUNTDOWN -->
+  <div id="sec-1" class="section active">
+    <div style="text-align: center; z-index: 2;">
+      <h1 id="age-number" onclick="triggerBurst()">21</h1>
+      <p class="sub-text">CLICK THE NUMBER</p>
+    </div>
+    <canvas id="fire-canvas"></canvas>
+  </div>
+
+  <!-- SECTION 2: BALLOONS & WISH -->
+  <div id="sec-2" class="section">
+    <div id="balloon-container"></div>
+    <h1 class="bday-title">Happy Birthday! <br>&#127880; &#127874; &#127881;</h1>
+  </div>
+
+  <!-- SECTION 3: CURVED CAROUSEL -->
+  <div id="sec-3" class="section">
+    <div class="carousel-header">
+      <h2>Happy Birthday <span>Sweety</span></h2>
+      <p style="opacity: 0.7; margin-top: 5px;">May this year bring you closer to everything you're chasing.</p>
+    </div>
+    <div class="curved-ribbon">
+      <img class="ribbon-img" src="https://picsum.photos/200/300?random=1" alt="Memory">
+      <img class="ribbon-img" src="https://picsum.photos/200/300?random=2" alt="Memory">
+      <img class="ribbon-img" src="https://picsum.photos/200/300?random=3" alt="Memory">
+      <img class="ribbon-img" src="https://picsum.photos/200/300?random=4" alt="Memory">
+      <img class="ribbon-img" src="https://picsum.photos/200/300?random=5" alt="Memory">
+      <img class="ribbon-img" src="https://picsum.photos/200/300?random=6" alt="Memory">
+      <img class="ribbon-img" src="https://picsum.photos/200/300?random=7" alt="Memory">
+    </div>
+  </div>
+
+  <!-- SECTION 4: POLAROID BOARD -->
+  <div id="sec-4" class="section">
+    <h2 style="position: absolute; top: 5%; font-family: 'Playfair Display', serif; font-size: 2.5rem;">Drag Your Memories</h2>
+    
+    <div class="polaroid" style="top: 25%; left: 20%; transform: rotate(-6deg);">
+      <img src="https://picsum.photos/300/300?random=10" alt="Photo">
+      <div class="caption">Cutie &#10084;&#65039;</div>
+    </div>
+    <div class="polaroid" style="top: 20%; left: 55%; transform: rotate(8deg);">
+      <img src="https://picsum.photos/300/300?random=11" alt="Photo">
+      <div class="caption">Dream Girl &#10024;</div>
+    </div>
+    <div class="polaroid" style="top: 50%; left: 35%; transform: rotate(-3deg);">
+      <img src="https://picsum.photos/300/300?random=12" alt="Photo">
+      <div class="caption">Sunshine &#9728;&#65039;</div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: SKETCHBOOK / FLIPBOOK -->
+  <div id="sec-5" class="section">
+    <div class="book">
+      <!-- Page 1 -->
+      <div class="page" style="z-index: 2;" onclick="this.classList.toggle('flipped')">
+        <div class="page-front">
+          <h2 class="scrap-title">Our Sketchbook</h2>
+          <p style="text-align: center; opacity: 0.8;">Click to flip through the memories...</p>
+        </div>
+        <div class="page-back">
+          <p class="scrap-title">Chapter 21</p>
+          <p style="font-size: 0.9rem; text-align: center;">You are the stars in my dark and cold nights.</p>
+        </div>
+      </div>
+      <!-- Page 2 -->
+      <div class="page" style="z-index: 1;" onclick="this.classList.toggle('flipped')">
+        <div class="page-front">
+          <p class="scrap-title">Special Moments</p>
+          <img src="https://picsum.photos/200/150?random=20" style="width:100%; border-radius: 6px;" alt="Scrapbook">
+        </div>
+        <div class="page-back">
+          <h2 class="scrap-title">Forever & Always</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: 3D SPACE GALAXY -->
+  <div id="sec-6" class="section">
+    <canvas id="space-canvas"></canvas>
+  </div>
+
+  <script>
+    // NAVIGATION SYSTEM
+    let currentSection = 1;
+    const totalSections = 6;
+
+    function nextSection() {
+      document.getElementById(`sec-${currentSection}`).classList.remove('active');
+      currentSection = (currentSection % totalSections) + 1;
+      document.getElementById(`sec-${currentSection}`).classList.add('active');
+
+      if (currentSection === 2) initBalloons();
+      if (currentSection === 6) init3DSpace();
+    }
+
+    // SECTION 1: PARTICLE BURST
+    const canvas = document.getElementById('fire-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+    class Particle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 8 + 3;
+        this.speedX = (Math.random() - 0.5) * 8;
+        this.speedY = (Math.random() - 0.5) * 8 - 2;
+        this.color = `hsl(${Math.random() * 40 + 10}, 100%, 55%)`;
+        this.life = 1;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.size *= 0.95;
+        this.life -= 0.02;
+      }
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p, index) => {
+        p.update();
+        p.draw();
+        if (p.life <= 0 || p.size <= 0.5) particles.splice(index, 1);
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    function triggerBurst() {
+      const rect = document.getElementById('age-number').getBoundingClientRect();
+      for (let i = 0; i < 80; i++) {
+        particles.push(new Particle(rect.left + rect.width / 2, rect.top + rect.height / 2));
+      }
+      setTimeout(nextSection, 1200);
+    }
+
+    // SECTION 2: BALLOONS GENERATOR
+    function initBalloons() {
+      const container = document.getElementById('balloon-container');
+      container.innerHTML = '';
+      const colors = ['#ff4d6d', '#ffb703', '#06d6a0', '#118ab2', '#7209b7'];
+      for (let i = 0; i < 25; i++) {
+        let b = document.createElement('div');
+        b.className = 'balloon';
+        b.style.left = `${Math.random() * 100}%`;
+        b.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        b.style.animationDelay = `${Math.random() * 4}s`;
+        b.style.animationDuration = `${6 + Math.random() * 4}s`;
+        container.appendChild(b);
+      }
+    }
+
+    // SECTION 4: DRAGGABLE POLAROIDS
+    const polaroids = document.querySelectorAll('.polaroid');
+    polaroids.forEach(card => {
+      let isDragging = false;
+      let offsetX, offsetY;
+
+      card.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        offsetX = e.clientX - card.offsetLeft;
+        offsetY = e.clientY - card.offsetTop;
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        card.style.left = `${e.clientX - offsetX}px`;
+        card.style.top = `${e.clientY - offsetY}px`;
+      });
+
+      document.addEventListener('mouseup', () => isDragging = false);
+    });
+
+    // SECTION 6: THREE.JS 3D SPACE
+    let spaceInitialized = false;
+    function init3DSpace() {
+      if (spaceInitialized) return;
+      spaceInitialized = true;
+
+      const spaceCanvas = document.getElementById('space-canvas');
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ canvas: spaceCanvas, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      // Starfield
+      const starsGeometry = new THREE.BufferGeometry();
+      const starsCount = 2000;
+      const starPositions = new Float32Array(starsCount * 3);
+
+      for (let i = 0; i < starsCount * 3; i++) {
+        starPositions[i] = (Math.random() - 0.5) * 500;
+      }
+      starsGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+      const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.8 });
+      const starField = new THREE.Points(starsGeometry, starsMaterial);
+      scene.add(starField);
+
+      // Floating Photo Planes
+      const textureLoader = new THREE.TextureLoader();
+      const photoUrls = [
+        'https://picsum.photos/300/300?random=30',
+        'https://picsum.photos/300/300?random=31',
+        'https://picsum.photos/300/300?random=32',
+        'https://picsum.photos/300/300?random=33'
+      ];
+
+      const cards = [];
+      photoUrls.forEach((url, index) => {
+        const texture = textureLoader.load(url);
+        const geometry = new THREE.PlaneGeometry(3, 3);
+        const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+        const mesh = new THREE.Mesh(geometry, material);
+
+        mesh.position.set((index - 1.5) * 5, (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 5);
+        scene.add(mesh);
+        cards.push(mesh);
+      });
+
+      camera.position.z = 10;
+
+      function renderSpace() {
+        requestAnimationFrame(renderSpace);
+        starField.rotation.y += 0.0005;
+        cards.forEach((card, i) => {
+          card.rotation.y += 0.01;
+          card.rotation.x += 0.005;
+        });
+        renderer.render(scene, camera);
+      }
+      renderSpace();
+    }
+  </script>
+</body>
+</html>
