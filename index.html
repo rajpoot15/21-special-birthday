@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>21st Birthday Special</title>
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,6 +13,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     html, body {
@@ -24,26 +25,23 @@
       font-family: 'Montserrat', sans-serif;
     }
 
+    /* DIRECT DISPLAY TOGGLING TO PREVENT STUCK SECTIONS */
     .section {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      display: flex;
+      display: none; /* Hidden by default */
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.8s ease, visibility 0.8s ease;
       z-index: 1;
       overflow: hidden;
     }
 
     .section.active {
-      opacity: 1;
-      visibility: visible;
+      display: flex !important; /* Force visible */
       z-index: 10;
     }
 
@@ -52,20 +50,18 @@
       position: fixed;
       bottom: 25px;
       right: 25px;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
       color: #fff;
       padding: 14px 28px;
       border-radius: 30px;
       cursor: pointer;
       font-weight: 700;
       letter-spacing: 1px;
-      z-index: 99999;
-      transition: all 0.3s ease;
-      user-select: none;
+      z-index: 999999;
+      pointer-events: auto !important;
       touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
     }
 
     .nav-btn:active {
@@ -89,8 +85,8 @@
       z-index: 100;
       cursor: pointer;
       touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-      padding: 20px;
+      padding: 40px;
+      pointer-events: auto !important;
     }
 
     #age-number {
@@ -106,7 +102,7 @@
     }
 
     .number-box:active #age-number {
-      transform: scale(0.92);
+      transform: scale(0.9);
     }
 
     .sub-text {
@@ -124,7 +120,7 @@
       width: 100vw;
       height: 100vh;
       pointer-events: none;
-      z-index: 1;
+      z-index: 0;
     }
 
     /* SECTION 2: BALLOONS & WISH */
@@ -378,7 +374,6 @@
       transition: transform 0.1s ease;
       animation: pulse 1.5s infinite alternate;
       touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
     }
 
     .main-heart:active {
@@ -647,7 +642,7 @@
     let currentSection = 1;
     const totalSections = 6;
 
-    function nextSection() {
+    function goToNextSection() {
       const currentEl = document.getElementById(`sec-${currentSection}`);
       if (currentEl) currentEl.classList.remove('active');
 
@@ -668,20 +663,25 @@
       }
     }
 
-    // Direct listener for Next Stage Button
-    document.getElementById('next-btn').addEventListener('click', function(e) {
+    // Direct event listener for button
+    const navBtn = document.getElementById('next-btn');
+    const handleNavTrigger = (e) => {
+      e.preventDefault();
       e.stopPropagation();
-      nextSection();
-    });
+      goToNextSection();
+    };
+    navBtn.addEventListener('click', handleNavTrigger);
+    navBtn.addEventListener('touchend', handleNavTrigger);
 
     // SKETCHBOOK PAGE FLIP
     document.querySelectorAll('.page').forEach(pageEl => {
-      pageEl.addEventListener('click', function() {
-        this.classList.toggle('flipped');
+      const handlePageFlip = () => {
+        pageEl.classList.toggle('flipped');
         const book = document.getElementById('main-book');
         const anyFlipped = document.querySelectorAll('.page.flipped').length > 0;
         book.style.transform = anyFlipped ? 'translateX(0%)' : 'translateX(-25%)';
-      });
+      };
+      pageEl.addEventListener('click', handlePageFlip);
     });
 
     // SECTION 1: PARTICLE BURST
@@ -727,7 +727,4 @@
     animateParticles();
 
     let isProcessingClick = false;
-    document.getElementById('click-box').addEventListener('click', function(e) {
-      if (isProcessingClick) return;
-      isProcessingClick = true;
-              
+                 
