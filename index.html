@@ -433,7 +433,6 @@
       border: 2px solid rgba(255, 255, 255, 0.2);
     }
 
-    /* Secret message beneath canvas */
     .scratch-reveal-content {
       position: absolute;
       top: 0;
@@ -462,7 +461,6 @@
       line-height: 1.3;
     }
 
-    /* Canvas overlay that gets scratched off */
     #scratch-canvas {
       position: absolute;
       top: 0;
@@ -481,7 +479,7 @@
   <!-- SECTION 1: COUNTDOWN -->
   <div id="sec-1" class="section active">
     <div style="text-align: center; z-index: 2;">
-      <h1 id="age-number" onclick="triggerBurst()">21</h1>
+      <h1 id="age-number" onclick="triggerBurst(event)">21</h1>
       <p class="sub-text">CLICK THE NUMBER</p>
     </div>
     <canvas id="fire-canvas"></canvas>
@@ -618,7 +616,6 @@
     ];
 
     function loadUserPhotos() {
-      // Carousel Photos
       const ribbonContainer = document.getElementById('ribbon-container');
       ribbonContainer.innerHTML = '';
       MY_PHOTOS.forEach(url => {
@@ -628,12 +625,10 @@
         ribbonContainer.appendChild(img);
       });
 
-      // Polaroid Photos
       if (MY_PHOTOS[0]) document.getElementById('polaroid-1').src = MY_PHOTOS[0];
       if (MY_PHOTOS[1]) document.getElementById('polaroid-2').src = MY_PHOTOS[1];
       if (MY_PHOTOS[2]) document.getElementById('polaroid-3').src = MY_PHOTOS[2];
 
-      // Sketchbook Photos
       if (MY_PHOTOS[3]) document.getElementById('scrapbook-img-1').src = MY_PHOTOS[3];
       if (MY_PHOTOS[4]) document.getElementById('scrapbook-img-2').src = MY_PHOTOS[4];
       if (MY_PHOTOS[5]) document.getElementById('scrapbook-img-3').src = MY_PHOTOS[5];
@@ -710,8 +705,12 @@
     }
     animateParticles();
 
-    // Trigger fireworks only on click (No auto-redirect)
-    function triggerBurst() {
+    // STRICT FIX: Stop event propagation so clicking number never switches page
+    function triggerBurst(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       const rect = document.getElementById('age-number').getBoundingClientRect();
       for (let i = 0; i < 80; i++) {
         particles.push(new Particle(rect.left + rect.width / 2, rect.top + rect.height / 2));
@@ -720,4 +719,5 @@
 
     // SECTION 2: BALLOONS GENERATOR
     function initBalloons() {
-      const container = 
+      const container = document.getElementById('balloon-container');
+      conta
