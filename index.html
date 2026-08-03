@@ -87,6 +87,9 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       line-height: 1;
+      position: relative;
+      z-index: 20;
+      touch-action: manipulation;
     }
 
     #age-number:hover {
@@ -98,6 +101,7 @@
       font-size: 1rem;
       opacity: 0.6;
       margin-top: 15px;
+      pointer-events: none;
     }
 
     #fire-canvas {
@@ -107,6 +111,7 @@
       width: 100vw;
       height: 100vh;
       pointer-events: none;
+      z-index: 5;
     }
 
     /* SECTION 2: BALLOONS & WISH */
@@ -336,7 +341,6 @@
       position: relative;
     }
 
-    /* Part 1: Heart Tapper */
     .heart-tap-container {
       display: flex;
       flex-direction: column;
@@ -399,7 +403,6 @@
       100% { opacity: 0; transform: translateY(-100px) scale(1.5); }
     }
 
-    /* Part 2: Scratch Card */
     .scratch-container {
       opacity: 0;
       visibility: hidden;
@@ -474,12 +477,12 @@
 </head>
 <body>
 
-  <button class="nav-btn" id="next-btn" onclick="nextSection()">Next Stage &#x2192;</button>
+  <button class="nav-btn" id="next-btn" onclick="nextSection(event)">Next Stage &#x2192;</button>
 
   <!-- SECTION 1: COUNTDOWN -->
   <div id="sec-1" class="section active">
-    <div style="text-align: center; z-index: 2;">
-      <h1 id="age-number" onclick="triggerBurst(event)">21</h1>
+    <div style="text-align: center; z-index: 20; position: relative;">
+      <h1 id="age-number">21</h1>
       <p class="sub-text">CLICK THE NUMBER</p>
     </div>
     <canvas id="fire-canvas"></canvas>
@@ -497,15 +500,12 @@
       <h2>Happy Birthday <span>My Love</span></h2>
       <p style="opacity: 0.7; margin-top: 5px;">May this year bring you closer to everything you're chasing.</p>
     </div>
-    <div class="curved-ribbon" id="ribbon-container">
-      <!-- Loaded dynamically via JS -->
-    </div>
+    <div class="curved-ribbon" id="ribbon-container"></div>
   </div>
 
   <!-- SECTION 4: POLAROID BOARD -->
   <div id="sec-4" class="section">
     <h2 class="stage-title">Special Memories</h2>
-    
     <div class="polaroid" style="top: 25%; left: 20%; transform: rotate(-6deg);">
       <img id="polaroid-1" src="" alt="Photo 1">
       <div class="caption">Cutie &#10084;&#65039;</div>
@@ -524,8 +524,6 @@
   <div id="sec-5" class="section">
     <div class="book-wrapper">
       <div class="book" id="main-book">
-        
-        <!-- Cover / Page 1 -->
         <div class="page" style="z-index: 4;" onclick="flipPage(this)">
           <div class="page-front">
             <h2 class="scrap-title">Sketchbook for Special Person</h2>
@@ -537,7 +535,6 @@
           </div>
         </div>
 
-        <!-- Page 2 -->
         <div class="page" style="z-index: 3;" onclick="flipPage(this)">
           <div class="page-front">
             <p class="scrap-title" style="color: #e63946;">For You ❤️</p>
@@ -549,7 +546,6 @@
           </div>
         </div>
 
-        <!-- Page 3 -->
         <div class="page" style="z-index: 2;" onclick="flipPage(this)">
           <div class="page-front">
             <p class="scrap-title">Unforgettable</p>
@@ -561,7 +557,6 @@
           </div>
         </div>
 
-        <!-- Page 4 / Back Cover -->
         <div class="page" style="z-index: 1;" onclick="flipPage(this)">
           <div class="page-front">
             <p class="scrap-title">Treasured Days</p>
@@ -571,21 +566,18 @@
             <h2 class="scrap-title">Forever & Always ❤️</h2>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 
-  <!-- SECTION 6: HEART TAPPER & SCRATCH CARD REVEAL -->
+  <!-- SECTION 6: TAP 21 HEART & SCRATCH CARD REVEAL -->
   <div id="sec-6" class="section">
-    <!-- Step 1: Tap Heart 21 Times -->
     <div class="heart-tap-container" id="heart-box">
       <div class="main-heart" onclick="tapHeart(event)">❤️</div>
       <div class="heart-counter" id="tap-count">0 / 21</div>
       <div class="heart-instruction">TAP THE HEART 21 TIMES!</div>
     </div>
 
-    <!-- Step 2: Scratch Card Revealed -->
     <div class="scratch-container" id="scratch-box">
       <h2 class="scratch-title">A Special Surprise For You 🎁</h2>
       <div class="scratch-card-box">
@@ -600,9 +592,7 @@
   </div>
 
   <script>
-    // ==========================================
     // 📸 GOOGLE DRIVE DIRECT PHOTO LINKS
-    // ==========================================
     const MY_PHOTOS = [
       "https://lh3.googleusercontent.com/d/17SnIM0VFmukUc3Mrp4J1nnxti8TEQqgv",
       "https://lh3.googleusercontent.com/d/19ovY2YpHBDyL50K6bW-BvSOarqrmFADB",
@@ -642,7 +632,11 @@
     let currentSection = 1;
     const totalSections = 6;
 
-    function nextSection() {
+    function nextSection(e) {
+      if (e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
       document.getElementById(`sec-${currentSection}`).classList.remove('active');
       currentSection = (currentSection % totalSections) + 1;
       document.getElementById(`sec-${currentSection}`).classList.add('active');
@@ -705,7 +699,6 @@
     }
     animateParticles();
 
-    // STRICT FIX: Stop event propagation so clicking number never switches page
     function triggerBurst(e) {
       if (e) {
         e.preventDefault();
@@ -717,7 +710,118 @@
       }
     }
 
+    // DIRECT HARD-BINDING TO PREVENT MOBILE ADVANCEMENT
+    const ageNumEl = document.getElementById('age-number');
+    ['click', 'touchstart', 'pointerdown'].forEach(evt => {
+      ageNumEl.addEventListener(evt, triggerBurst, { passive: false });
+    });
+
     // SECTION 2: BALLOONS GENERATOR
     function initBalloons() {
       const container = document.getElementById('balloon-container');
-      conta
+      container.innerHTML = '';
+      const colors = ['#ff4d6d', '#ffb703', '#06d6a0', '#118ab2', '#7209b7'];
+      for (let i = 0; i < 25; i++) {
+        let b = document.createElement('div');
+        b.className = 'balloon';
+        b.style.left = `${Math.random() * 100}%`;
+        b.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        b.style.animationDelay = `${Math.random() * 4}s`;
+        b.style.animationDuration = `${6 + Math.random() * 4}s`;
+        container.appendChild(b);
+      }
+    }
+
+    // SECTION 4: DRAGGABLE POLAROIDS
+    const polaroids = document.querySelectorAll('.polaroid');
+    polaroids.forEach(card => {
+      let isDragging = false;
+      let offsetX, offsetY;
+
+      card.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        offsetX = e.clientX - card.offsetLeft;
+        offsetY = e.clientY - card.offsetTop;
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        card.style.left = `${e.clientX - offsetX}px`;
+        card.style.top = `${e.clientY - offsetY}px`;
+      });
+
+      document.addEventListener('mouseup', () => isDragging = false);
+    });
+
+    // SECTION 6: TAP 21 HEART & SCRATCH CARD REVEAL LOGIC
+    let tapCount = 0;
+
+    function tapHeart(e) {
+      if (tapCount >= 21) return;
+      tapCount++;
+      document.getElementById('tap-count').innerText = `${tapCount} / 21`;
+
+      const pop = document.createElement('div');
+      pop.className = 'pop-heart';
+      pop.innerText = '❤️';
+      pop.style.left = `${e.clientX - 15}px`;
+      pop.style.top = `${e.clientY - 30}px`;
+      document.body.appendChild(pop);
+      setTimeout(() => pop.remove(), 1000);
+
+      if (tapCount === 21) {
+        setTimeout(() => {
+          document.getElementById('heart-box').classList.add('hidden');
+          document.getElementById('scratch-box').classList.add('visible');
+          initScratchCard();
+        }, 500);
+      }
+    }
+
+    // SCRATCH CARD CANVAS LOGIC
+    function initScratchCard() {
+      const sCanvas = document.getElementById('scratch-canvas');
+      const sCtx = sCanvas.getContext('2d');
+      const box = sCanvas.parentElement;
+
+      sCanvas.width = box.offsetWidth;
+      sCanvas.height = box.offsetHeight;
+
+      const grad = sCtx.createLinearGradient(0, 0, sCanvas.width, sCanvas.height);
+      grad.addColorStop(0, '#ffd700');
+      grad.addColorStop(0.5, '#e6c200');
+      grad.addColorStop(1, '#b39700');
+      sCtx.fillStyle = grad;
+      sCtx.fillRect(0, 0, sCanvas.width, sCanvas.height);
+
+      sCtx.fillStyle = '#4a3b00';
+      sCtx.font = 'bold 20px Montserrat, sans-serif';
+      sCtx.textAlign = 'center';
+      sCtx.fillText('✨ Scratch Here ✨', sCanvas.width / 2, sCanvas.height / 2 + 7);
+
+      let isScratching = false;
+
+      function scratch(e) {
+        if (!isScratching) return;
+        const rect = sCanvas.getBoundingClientRect();
+        const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+        const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+
+        sCtx.globalCompositeOperation = 'destination-out';
+        sCtx.beginPath();
+        sCtx.arc(x, y, 25, 0, Math.PI * 2);
+        sCtx.fill();
+      }
+
+      sCanvas.addEventListener('mousedown', () => isScratching = true);
+      sCanvas.addEventListener('mouseup', () => isScratching = false);
+      sCanvas.addEventListener('mousemove', scratch);
+
+      sCanvas.addEventListener('touchstart', () => isScratching = true);
+      sCanvas.addEventListener('touchend', () => isScratching = false);
+      sCanvas.addEventListener('touchmove', scratch);
+    }
+  </script>
+</body>
+</html>
+
