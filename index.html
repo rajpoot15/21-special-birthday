@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>21st Birthday Special</title>
   
+  <!-- Font Awesome & Google Fonts -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Montserrat:wght@400;700;900&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
 
@@ -13,7 +14,6 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      -webkit-tap-highlight-color: transparent;
     }
 
     html, body {
@@ -25,23 +25,26 @@
       font-family: 'Montserrat', sans-serif;
     }
 
-    /* DIRECT DISPLAY TOGGLING TO PREVENT STUCK SECTIONS */
     .section {
-      position: fixed;
+      position: absolute;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      display: none; /* Hidden by default */
+      display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
       z-index: 1;
       overflow: hidden;
     }
 
     .section.active {
-      display: flex !important; /* Force visible */
+      opacity: 1;
+      visibility: visible;
       z-index: 10;
     }
 
@@ -50,28 +53,23 @@
       position: fixed;
       bottom: 25px;
       right: 25px;
-      background: rgba(255, 255, 255, 0.25);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       color: #fff;
-      padding: 14px 28px;
+      padding: 12px 24px;
       border-radius: 30px;
       cursor: pointer;
       font-weight: 700;
       letter-spacing: 1px;
-      z-index: 999999;
-      pointer-events: auto !important;
-      touch-action: manipulation;
+      z-index: 9999;
+      transition: all 0.3s ease;
     }
 
-    .nav-btn:active {
+    .nav-btn:hover {
       background: #ffffff;
       color: #000;
-      transform: scale(0.95);
-    }
-
-    .nav-btn.hidden-btn {
-      display: none !important;
+      transform: scale(1.05);
     }
 
     /* SECTION 1: COUNTDOWN */
@@ -79,30 +77,23 @@
       background: radial-gradient(circle, #1a1c23 0%, #0b0c10 100%);
     }
 
-    .number-box {
-      text-align: center;
-      position: relative;
-      z-index: 100;
-      cursor: pointer;
-      touch-action: manipulation;
-      padding: 40px;
-      pointer-events: auto !important;
-    }
-
     #age-number {
       font-size: clamp(8rem, 20vw, 16rem);
       font-weight: 900;
+      cursor: pointer;
       user-select: none;
-      transition: transform 0.2s ease;
+      transition: transform 0.3s ease;
       background: linear-gradient(180deg, #ffffff 0%, #888888 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       line-height: 1;
-      pointer-events: none;
+      position: relative;
+      z-index: 20;
+      touch-action: manipulation;
     }
 
-    .number-box:active #age-number {
-      transform: scale(0.9);
+    #age-number:hover {
+      transform: scale(1.08);
     }
 
     .sub-text {
@@ -120,7 +111,7 @@
       width: 100vw;
       height: 100vh;
       pointer-events: none;
-      z-index: 0;
+      z-index: 5;
     }
 
     /* SECTION 2: BALLOONS & WISH */
@@ -373,7 +364,6 @@
       filter: drop-shadow(0 0 25px rgba(255, 77, 109, 0.6));
       transition: transform 0.1s ease;
       animation: pulse 1.5s infinite alternate;
-      touch-action: manipulation;
     }
 
     .main-heart:active {
@@ -487,11 +477,11 @@
 </head>
 <body>
 
-  <button class="nav-btn" id="next-btn">Next Stage →</button>
+  <button class="nav-btn" id="next-btn" onclick="nextSection(event)">Next Stage &#x2192;</button>
 
   <!-- SECTION 1: COUNTDOWN -->
   <div id="sec-1" class="section active">
-    <div class="number-box" id="click-box">
+    <div style="text-align: center; z-index: 20; position: relative;">
       <h1 id="age-number">21</h1>
       <p class="sub-text">CLICK THE NUMBER</p>
     </div>
@@ -501,7 +491,7 @@
   <!-- SECTION 2: BALLOONS & WISH -->
   <div id="sec-2" class="section">
     <div id="balloon-container"></div>
-    <h1 class="bday-title">Happy Birthday! <br>🎈 🎂 🎉</h1>
+    <h1 class="bday-title">Happy Birthday! <br>&#127880; &#127874; &#127881;</h1>
   </div>
 
   <!-- SECTION 3: CURVED CAROUSEL -->
@@ -518,15 +508,15 @@
     <h2 class="stage-title">Special Memories</h2>
     <div class="polaroid" style="top: 25%; left: 20%; transform: rotate(-6deg);">
       <img id="polaroid-1" src="" alt="Photo 1">
-      <div class="caption">Cutie ❤️</div>
+      <div class="caption">Cutie &#10084;&#65039;</div>
     </div>
     <div class="polaroid" style="top: 22%; left: 55%; transform: rotate(8deg);">
       <img id="polaroid-2" src="" alt="Photo 2">
-      <div class="caption">Dream Girl ✨</div>
+      <div class="caption">Dream Girl &#10024;</div>
     </div>
     <div class="polaroid" style="top: 52%; left: 38%; transform: rotate(-3deg);">
       <img id="polaroid-3" src="" alt="Photo 3">
-      <div class="caption">Sunshine ☀️</div>
+      <div class="caption">Sunshine &#9728;&#65039;</div>
     </div>
   </div>
 
@@ -534,7 +524,7 @@
   <div id="sec-5" class="section">
     <div class="book-wrapper">
       <div class="book" id="main-book">
-        <div class="page" style="z-index: 4;">
+        <div class="page" style="z-index: 4;" onclick="flipPage(this)">
           <div class="page-front">
             <h2 class="scrap-title">Sketchbook for Special Person</h2>
             <p style="text-align: center; opacity: 0.7; font-size: 0.95rem;">Tap to flip through pages...</p>
@@ -545,7 +535,7 @@
           </div>
         </div>
 
-        <div class="page" style="z-index: 3;">
+        <div class="page" style="z-index: 3;" onclick="flipPage(this)">
           <div class="page-front">
             <p class="scrap-title" style="color: #e63946;">For You ❤️</p>
             <img id="scrapbook-img-1" class="sketch-img" src="" alt="Memory 1">
@@ -556,7 +546,7 @@
           </div>
         </div>
 
-        <div class="page" style="z-index: 2;">
+        <div class="page" style="z-index: 2;" onclick="flipPage(this)">
           <div class="page-front">
             <p class="scrap-title">Unforgettable</p>
             <img id="scrapbook-img-3" class="sketch-img" src="" alt="Memory 3">
@@ -567,7 +557,7 @@
           </div>
         </div>
 
-        <div class="page" style="z-index: 1;">
+        <div class="page" style="z-index: 1;" onclick="flipPage(this)">
           <div class="page-front">
             <p class="scrap-title">Treasured Days</p>
             <img id="scrapbook-img-5" class="sketch-img" src="" alt="Memory 5">
@@ -583,7 +573,7 @@
   <!-- SECTION 6: TAP 21 HEART & SCRATCH CARD REVEAL -->
   <div id="sec-6" class="section">
     <div class="heart-tap-container" id="heart-box">
-      <div class="main-heart" id="heart-btn">❤️</div>
+      <div class="main-heart" onclick="tapHeart(event)">❤️</div>
       <div class="heart-counter" id="tap-count">0 / 21</div>
       <div class="heart-instruction">TAP THE HEART 21 TIMES!</div>
     </div>
@@ -593,11 +583,11 @@
       <div class="scratch-card-box">
         <div class="scratch-reveal-content">
           <i class="fa-solid fa-ice-cream"></i>
-          <p>Whenever we meet, we are going on an ice cream date! 🍦❤️</p>
+          <p>Hum dono jab bhi milenge, ice cream date pe chalenge! 🍦❤️</p>
         </div>
         <canvas id="scratch-canvas"></canvas>
       </div>
-      <p style="opacity: 0.7; font-size: 0.9rem; margin-top: 15px;">Scratch the card to reveal your coupon! ✨</p>
+      <p style="opacity: 0.7; font-size: 0.9rem; margin-top: 15px;">Scratch the card to reveal your card! ✨</p>
     </div>
   </div>
 
@@ -642,47 +632,30 @@
     let currentSection = 1;
     const totalSections = 6;
 
-    function goToNextSection() {
-      const currentEl = document.getElementById(`sec-${currentSection}`);
-      if (currentEl) currentEl.classList.remove('active');
-
-      if (currentSection < totalSections) {
-        currentSection++;
+    function nextSection(e) {
+      if (e) {
+        e.stopPropagation();
+        e.preventDefault();
       }
-
-      const nextEl = document.getElementById(`sec-${currentSection}`);
-      if (nextEl) nextEl.classList.add('active');
+      document.getElementById(`sec-${currentSection}`).classList.remove('active');
+      currentSection = (currentSection % totalSections) + 1;
+      document.getElementById(`sec-${currentSection}`).classList.add('active');
 
       if (currentSection === 2) initBalloons();
-
-      const navBtn = document.getElementById('next-btn');
-      if (currentSection === totalSections) {
-        navBtn.classList.add('hidden-btn');
-      } else {
-        navBtn.classList.remove('hidden-btn');
-      }
     }
 
-    // Direct event listener for button
-    const navBtn = document.getElementById('next-btn');
-    const handleNavTrigger = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      goToNextSection();
-    };
-    navBtn.addEventListener('click', handleNavTrigger);
-    navBtn.addEventListener('touchend', handleNavTrigger);
-
     // SKETCHBOOK PAGE FLIP
-    document.querySelectorAll('.page').forEach(pageEl => {
-      const handlePageFlip = () => {
-        pageEl.classList.toggle('flipped');
-        const book = document.getElementById('main-book');
-        const anyFlipped = document.querySelectorAll('.page.flipped').length > 0;
-        book.style.transform = anyFlipped ? 'translateX(0%)' : 'translateX(-25%)';
-      };
-      pageEl.addEventListener('click', handlePageFlip);
-    });
+    function flipPage(pageEl) {
+      pageEl.classList.toggle('flipped');
+      const book = document.getElementById('main-book');
+      const anyFlipped = document.querySelectorAll('.page.flipped').length > 0;
+      
+      if (anyFlipped) {
+        book.style.transform = 'translateX(0%)';
+      } else {
+        book.style.transform = 'translateX(-25%)';
+      }
+    }
 
     // SECTION 1: PARTICLE BURST
     const canvas = document.getElementById('fire-canvas');
@@ -726,5 +699,25 @@
     }
     animateParticles();
 
-    let isProcessingClick = false;
-                 
+    function triggerBurst(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const rect = document.getElementById('age-number').getBoundingClientRect();
+      for (let i = 0; i < 80; i++) {
+        particles.push(new Particle(rect.left + rect.width / 2, rect.top + rect.height / 2));
+      }
+    }
+
+    // DIRECT HARD-BINDING TO PREVENT MOBILE ADVANCEMENT
+    const ageNumEl = document.getElementById('age-number');
+    ['click', 'touchstart', 'pointerdown'].forEach(evt => {
+      ageNumEl.addEventListener(evt, triggerBurst, { passive: false });
+    });
+
+    // SECTION 2: BALLOONS GENERATOR
+    function initBalloons() {
+      const container = document.getElementById('balloon-container');
+      container.innerHTML = '';
+      const colors = ['
