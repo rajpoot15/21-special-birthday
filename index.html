@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>21st Birthday Special</title>
   
+  <!-- Font Awesome & Google Fonts -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Montserrat:wght@400;700;900&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
 
@@ -475,8 +476,9 @@
 </head>
 <body>
 
-  <button class="nav-btn" id="next-btn" onclick="nextSection()">Next Stage →</button>
+  <button class="nav-btn" id="next-btn" onclick="nextSection()">Next Stage &#x2192;</button>
 
+  <!-- SECTION 1: COUNTDOWN -->
   <div id="sec-1" class="section active">
     <div style="text-align: center; z-index: 2;">
       <h1 id="age-number" onclick="triggerBurst()">21</h1>
@@ -485,41 +487,47 @@
     <canvas id="fire-canvas"></canvas>
   </div>
 
+  <!-- SECTION 2: BALLOONS & WISH -->
   <div id="sec-2" class="section">
     <div id="balloon-container"></div>
-    <h1 class="bday-title">Happy Birthday! <br>🎈 🎂 🎉</h1>
+    <h1 class="bday-title">Happy Birthday! <br>&#127880; &#127874; &#127881;</h1>
   </div>
 
+  <!-- SECTION 3: CURVED CAROUSEL -->
   <div id="sec-3" class="section">
     <div class="carousel-header">
       <h2>Happy Birthday <span>My Love</span></h2>
       <p style="opacity: 0.7; margin-top: 5px;">May this year bring you closer to everything you're chasing.</p>
     </div>
     <div class="curved-ribbon" id="ribbon-container">
-      </div>
+      <!-- Loaded dynamically via JS -->
+    </div>
   </div>
 
+  <!-- SECTION 4: POLAROID BOARD -->
   <div id="sec-4" class="section">
     <h2 class="stage-title">Special Memories</h2>
     
     <div class="polaroid" style="top: 25%; left: 20%; transform: rotate(-6deg);">
       <img id="polaroid-1" src="" alt="Photo 1">
-      <div class="caption">Cutie ❤️</div>
+      <div class="caption">Cutie &#10084;&#65039;</div>
     </div>
     <div class="polaroid" style="top: 22%; left: 55%; transform: rotate(8deg);">
       <img id="polaroid-2" src="" alt="Photo 2">
-      <div class="caption">Dream Girl ✨</div>
+      <div class="caption">Dream Girl &#10024;</div>
     </div>
     <div class="polaroid" style="top: 52%; left: 38%; transform: rotate(-3deg);">
       <img id="polaroid-3" src="" alt="Photo 3">
-      <div class="caption">Sunshine ☀️</div>
+      <div class="caption">Sunshine &#9728;&#65039;</div>
     </div>
   </div>
 
+  <!-- SECTION 5: SKETCHBOOK -->
   <div id="sec-5" class="section">
     <div class="book-wrapper">
       <div class="book" id="main-book">
         
+        <!-- Cover / Page 1 -->
         <div class="page" style="z-index: 4;" onclick="flipPage(this)">
           <div class="page-front">
             <h2 class="scrap-title">Sketchbook for Special Person</h2>
@@ -531,6 +539,7 @@
           </div>
         </div>
 
+        <!-- Page 2 -->
         <div class="page" style="z-index: 3;" onclick="flipPage(this)">
           <div class="page-front">
             <p class="scrap-title" style="color: #e63946;">For You ❤️</p>
@@ -542,6 +551,7 @@
           </div>
         </div>
 
+        <!-- Page 3 -->
         <div class="page" style="z-index: 2;" onclick="flipPage(this)">
           <div class="page-front">
             <p class="scrap-title">Unforgettable</p>
@@ -553,6 +563,7 @@
           </div>
         </div>
 
+        <!-- Page 4 / Back Cover -->
         <div class="page" style="z-index: 1;" onclick="flipPage(this)">
           <div class="page-front">
             <p class="scrap-title">Treasured Days</p>
@@ -567,18 +578,21 @@
     </div>
   </div>
 
+  <!-- SECTION 6: HEART TAPPER & SCRATCH CARD REVEAL -->
   <div id="sec-6" class="section">
+    <!-- Step 1: Tap Heart 21 Times -->
     <div class="heart-tap-container" id="heart-box">
       <div class="main-heart" onclick="tapHeart(event)">❤️</div>
       <div class="heart-counter" id="tap-count">0 / 21</div>
       <div class="heart-instruction">TAP THE HEART 21 TIMES!</div>
     </div>
 
+    <!-- Step 2: Scratch Card Revealed -->
     <div class="scratch-container" id="scratch-box">
       <h2 class="scratch-title">A Special Surprise For You 🎁</h2>
       <div class="scratch-card-box">
         <div class="scratch-reveal-content">
-          <i class="fa-solid font-awesome-icon fa-ice-cream"></i>
+          <i class="fa-solid fa-ice-cream"></i>
           <p>Hum dono jab bhi milenge, ice cream date pe chalenge! 🍦❤️</p>
         </div>
         <canvas id="scratch-canvas"></canvas>
@@ -696,26 +710,14 @@
     }
     animateParticles();
 
+    // Trigger fireworks only on click (No auto-redirect)
     function triggerBurst() {
       const rect = document.getElementById('age-number').getBoundingClientRect();
       for (let i = 0; i < 80; i++) {
         particles.push(new Particle(rect.left + rect.width / 2, rect.top + rect.height / 2));
       }
-      setTimeout(nextSection, 1200);
     }
 
     // SECTION 2: BALLOONS GENERATOR
     function initBalloons() {
-      const container = document.getElementById('balloon-container');
-      container.innerHTML = '';
-      const colors = ['#ff4d6d', '#ffb703', '#06d6a0', '#118ab2', '#7209b7'];
-      for (let i = 0; i < 25; i++) {
-        let b = document.createElement('div');
-        b.className = 'balloon';
-        b.style.left = `${Math.random() * 100}%`;
-        b.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        b.style.animationDelay = `${Math.random() * 4}s`;
-        b.style.animationDuration = `${6 + Math.random() * 4}s`;
-        container.appendChild(b);
-      }
-    }
+      const container = 
