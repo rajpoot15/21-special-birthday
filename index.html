@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>21st Birthday Special</title>
   
-  <!-- Font Awesome & Google Fonts -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Montserrat:wght@400;700;900&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
 
@@ -53,25 +52,26 @@
       position: fixed;
       bottom: 25px;
       right: 25px;
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.4);
       color: #fff;
-      padding: 12px 24px;
+      padding: 14px 28px;
       border-radius: 30px;
       cursor: pointer;
       font-weight: 700;
       letter-spacing: 1px;
-      z-index: 9999;
+      z-index: 99999;
       transition: all 0.3s ease;
       user-select: none;
+      touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
 
-    .nav-btn:hover {
+    .nav-btn:active {
       background: #ffffff;
       color: #000;
-      transform: scale(1.05);
+      transform: scale(0.95);
     }
 
     .nav-btn.hidden-btn {
@@ -83,24 +83,30 @@
       background: radial-gradient(circle, #1a1c23 0%, #0b0c10 100%);
     }
 
+    .number-box {
+      text-align: center;
+      position: relative;
+      z-index: 100;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      padding: 20px;
+    }
+
     #age-number {
       font-size: clamp(8rem, 20vw, 16rem);
       font-weight: 900;
-      cursor: pointer;
       user-select: none;
-      transition: transform 0.3s ease;
+      transition: transform 0.2s ease;
       background: linear-gradient(180deg, #ffffff 0%, #888888 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       line-height: 1;
-      position: relative;
-      z-index: 20;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
+      pointer-events: none;
     }
 
-    #age-number:active {
-      transform: scale(0.95);
+    .number-box:active #age-number {
+      transform: scale(0.92);
     }
 
     .sub-text {
@@ -118,7 +124,7 @@
       width: 100vw;
       height: 100vh;
       pointer-events: none;
-      z-index: 5;
+      z-index: 1;
     }
 
     /* SECTION 2: BALLOONS & WISH */
@@ -371,6 +377,7 @@
       filter: drop-shadow(0 0 25px rgba(255, 77, 109, 0.6));
       transition: transform 0.1s ease;
       animation: pulse 1.5s infinite alternate;
+      touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -485,12 +492,12 @@
 </head>
 <body>
 
-  <button class="nav-btn" id="next-btn" onclick="nextSection()">Next Stage →</button>
+  <button class="nav-btn" id="next-btn">Next Stage →</button>
 
   <!-- SECTION 1: COUNTDOWN -->
   <div id="sec-1" class="section active">
-    <div style="text-align: center; z-index: 20; position: relative;">
-      <h1 id="age-number" onclick="handleAgeClick()">21</h1>
+    <div class="number-box" id="click-box">
+      <h1 id="age-number">21</h1>
       <p class="sub-text">CLICK THE NUMBER</p>
     </div>
     <canvas id="fire-canvas"></canvas>
@@ -532,7 +539,7 @@
   <div id="sec-5" class="section">
     <div class="book-wrapper">
       <div class="book" id="main-book">
-        <div class="page" style="z-index: 4;" onclick="flipPage(this)">
+        <div class="page" style="z-index: 4;">
           <div class="page-front">
             <h2 class="scrap-title">Sketchbook for Special Person</h2>
             <p style="text-align: center; opacity: 0.7; font-size: 0.95rem;">Tap to flip through pages...</p>
@@ -543,7 +550,7 @@
           </div>
         </div>
 
-        <div class="page" style="z-index: 3;" onclick="flipPage(this)">
+        <div class="page" style="z-index: 3;">
           <div class="page-front">
             <p class="scrap-title" style="color: #e63946;">For You ❤️</p>
             <img id="scrapbook-img-1" class="sketch-img" src="" alt="Memory 1">
@@ -554,7 +561,7 @@
           </div>
         </div>
 
-        <div class="page" style="z-index: 2;" onclick="flipPage(this)">
+        <div class="page" style="z-index: 2;">
           <div class="page-front">
             <p class="scrap-title">Unforgettable</p>
             <img id="scrapbook-img-3" class="sketch-img" src="" alt="Memory 3">
@@ -565,7 +572,7 @@
           </div>
         </div>
 
-        <div class="page" style="z-index: 1;" onclick="flipPage(this)">
+        <div class="page" style="z-index: 1;">
           <div class="page-front">
             <p class="scrap-title">Treasured Days</p>
             <img id="scrapbook-img-5" class="sketch-img" src="" alt="Memory 5">
@@ -581,7 +588,7 @@
   <!-- SECTION 6: TAP 21 HEART & SCRATCH CARD REVEAL -->
   <div id="sec-6" class="section">
     <div class="heart-tap-container" id="heart-box">
-      <div class="main-heart" onclick="tapHeart(event)">❤️</div>
+      <div class="main-heart" id="heart-btn">❤️</div>
       <div class="heart-counter" id="tap-count">0 / 21</div>
       <div class="heart-instruction">TAP THE HEART 21 TIMES!</div>
     </div>
@@ -653,7 +660,6 @@
 
       if (currentSection === 2) initBalloons();
 
-      // HIDE NEXT BUTTON ON LAST STAGE
       const navBtn = document.getElementById('next-btn');
       if (currentSection === totalSections) {
         navBtn.classList.add('hidden-btn');
@@ -662,18 +668,21 @@
       }
     }
 
+    // Direct listener for Next Stage Button
+    document.getElementById('next-btn').addEventListener('click', function(e) {
+      e.stopPropagation();
+      nextSection();
+    });
+
     // SKETCHBOOK PAGE FLIP
-    function flipPage(pageEl) {
-      pageEl.classList.toggle('flipped');
-      const book = document.getElementById('main-book');
-      const anyFlipped = document.querySelectorAll('.page.flipped').length > 0;
-      
-      if (anyFlipped) {
-        book.style.transform = 'translateX(0%)';
-      } else {
-        book.style.transform = 'translateX(-25%)';
-      }
-    }
+    document.querySelectorAll('.page').forEach(pageEl => {
+      pageEl.addEventListener('click', function() {
+        this.classList.toggle('flipped');
+        const book = document.getElementById('main-book');
+        const anyFlipped = document.querySelectorAll('.page.flipped').length > 0;
+        book.style.transform = anyFlipped ? 'translateX(0%)' : 'translateX(-25%)';
+      });
+    });
 
     // SECTION 1: PARTICLE BURST
     const canvas = document.getElementById('fire-canvas');
@@ -718,10 +727,7 @@
     animateParticles();
 
     let isProcessingClick = false;
-    function handleAgeClick() {
+    document.getElementById('click-box').addEventListener('click', function(e) {
       if (isProcessingClick) return;
       isProcessingClick = true;
-
-      const rect = document.getElementById('age-number').getBoundingClientRect();
-      for (let i = 0; i < 80; i++) {
-        particles.push(new Particle(rect.left + r
+              
