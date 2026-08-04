@@ -456,51 +456,75 @@
   </div>
 
   <script>
-    // PASTE YOUR GOOGLE DRIVE LINKS OR ANY IMAGE LINKS IN THIS ARRAY:
+    // PREVIOUSLY PROVIDED GOOGLE DRIVE LINKS
     const MY_DRIVE_LINKS = [
-      "https://drive.google.com/file/d/YOUR_FILE_ID_1/view?usp=sharing",
-      "https://drive.google.com/file/d/YOUR_FILE_ID_2/view?usp=sharing",
-      "https://drive.google.com/file/d/YOUR_FILE_ID_3/view?usp=sharing",
-      "https://drive.google.com/file/d/YOUR_FILE_ID_4/view?usp=sharing",
-      "https://drive.google.com/file/d/YOUR_FILE_ID_5/view?usp=sharing",
-      "https://drive.google.com/file/d/YOUR_FILE_ID_6/view?usp=sharing",
-      "https://drive.google.com/file/d/YOUR_FILE_ID_7/view?usp=sharing",
-      "https://drive.google.com/file/d/YOUR_FILE_ID_8/view?usp=sharing"
+      "https://drive.google.com/file/d/17SnIM0VFmukUc3Mrp4J1nnxti8TEQqgv/view?usp=drivesdk",
+      "https://drive.google.com/file/d/19ovY2YpHBDyL50K6bW-BvSOarqrmFADB/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1zL60ETsQ2l6l-ERUMjGRHbvra6Uuk4Kj/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1kYSHEoRryhLcgDETySMs83HvWXpPOxkZ/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1wiuBQn_5xZ8uH4hihRZ-sgxGQAmW5dE0/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1Ghnt96KotZnX3CIleIV1_KE3MSgWoOcn/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1WLFj6qpgsJGP0VY6PS6E1r-O7JE_FNMg/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1zVjt3WYorO_0eJPP-JWx7HqNrB_xRpuU/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1_amoc9VPsEb8wF77LNrLg5rb32yYkC0p/view?usp=drivesdk"
     ];
 
-    // AUTOMATIC GOOGLE DRIVE TO DIRECT IMAGE CONVERTER
-    function convertDriveLink(url) {
+    // UPDATED CONVERTER: Uses direct view export format for Drive
+    function convertDriveLink(url, fileIdFallback) {
       if (!url) return "https://picsum.photos/400/500";
-      
-      // Extracts File ID from standard Google Drive share links
       const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
-      if (match && match[1]) {
-        return `https://lh3.googleusercontent.com/d/${match[1]}`;
+      const id = (match && match[1]) ? match[1] : fileIdFallback;
+      if (id) {
+        return `https://drive.google.com/uc?export=view&id=${id}`;
       }
-      return url; // Returns original link if it's already a direct link or external URL
+      return url;
+    }
+
+    // Attach fallback handler to switch to alternative format if Drive blocks loading
+    function setupImgFallback(imgElement, fileId) {
+      imgElement.onerror = function() {
+        if (!this.getAttribute('data-tried-lh3')) {
+          this.setAttribute('data-tried-lh3', 'true');
+          this.src = `https://lh3.googleusercontent.com/d/${fileId}`;
+        }
+      };
     }
 
     function loadUserPhotos() {
-      const parsedPhotos = MY_DRIVE_LINKS.map(convertDriveLink);
-
       const ribbonContainer = document.getElementById('ribbon-container');
       ribbonContainer.innerHTML = '';
-      parsedPhotos.forEach(url => {
+
+      MY_DRIVE_LINKS.forEach((url, idx) => {
+        const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+        const fileId = match ? match[1] : '';
+        const convertedUrl = convertDriveLink(url, fileId);
+
+        // Populate ribbon photos
         const img = document.createElement('img');
         img.className = 'ribbon-img';
-        img.src = url;
+        img.src = convertedUrl;
+        if (fileId) setupImgFallback(img, fileId);
         ribbonContainer.appendChild(img);
+
+        // Assign images to Polaroids and Scrapbook
+        if (idx === 0) setImgWithFallback('polaroid-1', convertedUrl, fileId);
+        if (idx === 1) setImgWithFallback('polaroid-2', convertedUrl, fileId);
+        if (idx === 2) setImgWithFallback('polaroid-3', convertedUrl, fileId);
+
+        if (idx === 3) setImgWithFallback('scrapbook-img-1', convertedUrl, fileId);
+        if (idx === 4) setImgWithFallback('scrapbook-img-2', convertedUrl, fileId);
+        if (idx === 5) setImgWithFallback('scrapbook-img-3', convertedUrl, fileId);
+        if (idx === 6) setImgWithFallback('scrapbook-img-4', convertedUrl, fileId);
+        if (idx === 7) setImgWithFallback('scrapbook-img-5', convertedUrl, fileId);
       });
+    }
 
-      if (parsedPhotos[0]) document.getElementById('polaroid-1').src = parsedPhotos[0];
-      if (parsedPhotos[1]) document.getElementById('polaroid-2').src = parsedPhotos[1];
-      if (parsedPhotos[2]) document.getElementById('polaroid-3').src = parsedPhotos[2];
-
-      if (parsedPhotos[3]) document.getElementById('scrapbook-img-1').src = parsedPhotos[3];
-      if (parsedPhotos[4]) document.getElementById('scrapbook-img-2').src = parsedPhotos[4];
-      if (parsedPhotos[5]) document.getElementById('scrapbook-img-3').src = parsedPhotos[5];
-      if (parsedPhotos[6]) document.getElementById('scrapbook-img-4').src = parsedPhotos[6];
-      if (parsedPhotos[7]) document.getElementById('scrapbook-img-5').src = parsedPhotos[7];
+    function setImgWithFallback(elemId, src, fileId) {
+      const el = document.getElementById(elemId);
+      if (el) {
+        el.src = src;
+        if (fileId) setupImgFallback(el, fileId);
+      }
     }
 
     loadUserPhotos();
@@ -666,21 +690,4 @@
       const doDrag = (e) => {
         if (!isDragging) return;
         const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-        card.style.left = `${clientX - offsetX}px`;
-        card.style.top = `${clientY - offsetY}px`;
-      };
-
-      const stopDrag = () => isDragging = false;
-
-      card.addEventListener('mousedown', startDrag);
-      document.addEventListener('mousemove', doDrag);
-      document.addEventListener('mouseup', stopDrag);
-
-      card.addEventListener('touchstart', startDrag, { passive: true });
-      document.addEventListener('touchmove', doDrag, { passive: true });
-      document.addEventListener('touchend', stopDrag);
-    });
-  </script>
-</body>
-</html>
+  
