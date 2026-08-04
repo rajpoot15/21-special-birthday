@@ -456,43 +456,56 @@
   </div>
 
   <script>
-    // RELIABLE PUBLIC PLACEHOLDER IMAGES
-    const MY_PHOTOS = [
-      "https://picsum.photos/id/1025/400/500",
-      "https://picsum.photos/id/64/400/500",
-      "https://picsum.photos/id/1062/400/500",
-      "https://picsum.photos/id/338/400/500",
-      "https://picsum.photos/id/349/400/500",
-      "https://picsum.photos/id/1011/400/500",
-      "https://picsum.photos/id/1027/400/500",
-      "https://picsum.photos/id/1069/400/500",
-      "https://picsum.photos/id/325/400/500"
+    // PASTE YOUR GOOGLE DRIVE LINKS OR ANY IMAGE LINKS IN THIS ARRAY:
+    const MY_DRIVE_LINKS = [
+      "https://drive.google.com/file/d/YOUR_FILE_ID_1/view?usp=sharing",
+      "https://drive.google.com/file/d/YOUR_FILE_ID_2/view?usp=sharing",
+      "https://drive.google.com/file/d/YOUR_FILE_ID_3/view?usp=sharing",
+      "https://drive.google.com/file/d/YOUR_FILE_ID_4/view?usp=sharing",
+      "https://drive.google.com/file/d/YOUR_FILE_ID_5/view?usp=sharing",
+      "https://drive.google.com/file/d/YOUR_FILE_ID_6/view?usp=sharing",
+      "https://drive.google.com/file/d/YOUR_FILE_ID_7/view?usp=sharing",
+      "https://drive.google.com/file/d/YOUR_FILE_ID_8/view?usp=sharing"
     ];
 
+    // AUTOMATIC GOOGLE DRIVE TO DIRECT IMAGE CONVERTER
+    function convertDriveLink(url) {
+      if (!url) return "https://picsum.photos/400/500";
+      
+      // Extracts File ID from standard Google Drive share links
+      const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) {
+        return `https://lh3.googleusercontent.com/d/${match[1]}`;
+      }
+      return url; // Returns original link if it's already a direct link or external URL
+    }
+
     function loadUserPhotos() {
+      const parsedPhotos = MY_DRIVE_LINKS.map(convertDriveLink);
+
       const ribbonContainer = document.getElementById('ribbon-container');
       ribbonContainer.innerHTML = '';
-      MY_PHOTOS.forEach(url => {
+      parsedPhotos.forEach(url => {
         const img = document.createElement('img');
         img.className = 'ribbon-img';
         img.src = url;
         ribbonContainer.appendChild(img);
       });
 
-      if (MY_PHOTOS[0]) document.getElementById('polaroid-1').src = MY_PHOTOS[0];
-      if (MY_PHOTOS[1]) document.getElementById('polaroid-2').src = MY_PHOTOS[1];
-      if (MY_PHOTOS[2]) document.getElementById('polaroid-3').src = MY_PHOTOS[2];
+      if (parsedPhotos[0]) document.getElementById('polaroid-1').src = parsedPhotos[0];
+      if (parsedPhotos[1]) document.getElementById('polaroid-2').src = parsedPhotos[1];
+      if (parsedPhotos[2]) document.getElementById('polaroid-3').src = parsedPhotos[2];
 
-      if (MY_PHOTOS[3]) document.getElementById('scrapbook-img-1').src = MY_PHOTOS[3];
-      if (MY_PHOTOS[4]) document.getElementById('scrapbook-img-2').src = MY_PHOTOS[4];
-      if (MY_PHOTOS[5]) document.getElementById('scrapbook-img-3').src = MY_PHOTOS[5];
-      if (MY_PHOTOS[6]) document.getElementById('scrapbook-img-4').src = MY_PHOTOS[6];
-      if (MY_PHOTOS[7]) document.getElementById('scrapbook-img-5').src = MY_PHOTOS[7];
+      if (parsedPhotos[3]) document.getElementById('scrapbook-img-1').src = parsedPhotos[3];
+      if (parsedPhotos[4]) document.getElementById('scrapbook-img-2').src = parsedPhotos[4];
+      if (parsedPhotos[5]) document.getElementById('scrapbook-img-3').src = parsedPhotos[5];
+      if (parsedPhotos[6]) document.getElementById('scrapbook-img-4').src = parsedPhotos[6];
+      if (parsedPhotos[7]) document.getElementById('scrapbook-img-5').src = parsedPhotos[7];
     }
 
     loadUserPhotos();
 
-    // NAVIGATION SYSTEM (MAX 5 SECTIONS)
+    // NAVIGATION SYSTEM
     let currentSection = 1;
     const totalSections = 5;
 
