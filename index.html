@@ -81,7 +81,7 @@
     .number-box {
       text-align: center;
       position: relative;
-      z-index: 100;
+      z-index: 1000;
       cursor: pointer;
       touch-action: manipulation;
       padding: 40px;
@@ -469,7 +469,6 @@
       "https://drive.google.com/file/d/1_amoc9VPsEb8wF77LNrLg5rb32yYkC0p/view?usp=drivesdk"
     ];
 
-    // UPDATED CONVERTER: Uses direct view export format for Drive
     function convertDriveLink(url, fileIdFallback) {
       if (!url) return "https://picsum.photos/400/500";
       const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
@@ -480,7 +479,6 @@
       return url;
     }
 
-    // Attach fallback handler to switch to alternative format if Drive blocks loading
     function setupImgFallback(imgElement, fileId) {
       imgElement.onerror = function() {
         if (!this.getAttribute('data-tried-lh3')) {
@@ -499,14 +497,12 @@
         const fileId = match ? match[1] : '';
         const convertedUrl = convertDriveLink(url, fileId);
 
-        // Populate ribbon photos
         const img = document.createElement('img');
         img.className = 'ribbon-img';
         img.src = convertedUrl;
         if (fileId) setupImgFallback(img, fileId);
         ribbonContainer.appendChild(img);
 
-        // Assign images to Polaroids and Scrapbook
         if (idx === 0) setImgWithFallback('polaroid-1', convertedUrl, fileId);
         if (idx === 1) setImgWithFallback('polaroid-2', convertedUrl, fileId);
         if (idx === 2) setImgWithFallback('polaroid-3', convertedUrl, fileId);
@@ -561,7 +557,6 @@
       goToNextSection();
     };
     navBtn.addEventListener('click', handleNavTrigger);
-    navBtn.addEventListener('touchend', handleNavTrigger);
 
     // SKETCHBOOK PAGE FLIP
     document.querySelectorAll('.page').forEach(pageEl => {
@@ -629,12 +624,13 @@
     }
     animateSparkles();
 
-    let isProcessingClick = false;
+    // IMPROVED 21 TAP TRIGGER
+    let isTransitioning = false;
     const clickBox = document.getElementById('click-box');
 
-    const handle21Tap = (e) => {
-      if (isProcessingClick) return;
-      isProcessingClick = true;
+    function trigger21Tap(e) {
+      if (isTransitioning) return;
+      isTransitioning = true;
 
       const rect = clickBox.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
@@ -646,15 +642,11 @@
 
       setTimeout(() => {
         goToNextSection();
-        isProcessingClick = false;
-      }, 1000);
-    };
+      }, 600);
+    }
 
-    clickBox.addEventListener('click', handle21Tap);
-    clickBox.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      handle21Tap(e);
-    });
+    clickBox.addEventListener('pointerdown', trigger21Tap);
+    clickBox.addEventListener('click', trigger21Tap);
 
     // SECTION 2: FLOATING BALLOONS
     function initBalloons() {
@@ -690,4 +682,13 @@
       const doDrag = (e) => {
         if (!isDragging) return;
         const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-  
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+        card.style.left = `${clientX - offsetX}px`;
+        card.style.top = `${clientY - offsetY}px`;
+      };
+
+      const stopDrag = () => isDragging = false;
+
+      card.addEventListener('mousedown', startDrag);
+      document.addEventListener('mousemove', doDrag);
+      document.a
