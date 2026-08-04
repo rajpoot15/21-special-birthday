@@ -60,7 +60,6 @@
       letter-spacing: 1px;
       z-index: 999999;
       pointer-events: auto !important;
-      touch-action: manipulation;
     }
 
     .nav-btn:active {
@@ -76,32 +75,25 @@
     /* SECTION 1: COUNTDOWN */
     #sec-1 {
       background: radial-gradient(circle, #1a1c23 0%, #0b0c10 100%);
+      cursor: pointer;
     }
 
     .number-box {
       text-align: center;
       position: relative;
       z-index: 1000;
-      cursor: pointer;
-      touch-action: manipulation;
       padding: 40px;
-      pointer-events: auto !important;
+      pointer-events: none;
     }
 
     #age-number {
       font-size: clamp(8rem, 20vw, 16rem);
       font-weight: 900;
       user-select: none;
-      transition: transform 0.2s ease;
       background: linear-gradient(180deg, #ffffff 0%, #888888 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       line-height: 1;
-      pointer-events: none;
-    }
-
-    .number-box:active #age-number {
-      transform: scale(0.9);
     }
 
     .sub-text {
@@ -109,7 +101,6 @@
       font-size: 1rem;
       opacity: 0.6;
       margin-top: 15px;
-      pointer-events: none;
     }
 
     #fire-canvas {
@@ -311,7 +302,6 @@
       transform-style: preserve-3d;
       transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
       cursor: pointer;
-      touch-action: manipulation;
     }
 
     .page-front, .page-back {
@@ -366,9 +356,9 @@
 
   <!-- SECTION 1: COUNTDOWN -->
   <div id="sec-1" class="section active">
-    <div class="number-box" id="click-box">
+    <div class="number-box">
       <h1 id="age-number">21</h1>
-      <p class="sub-text">CLICK THE NUMBER</p>
+      <p class="sub-text">TAP ANYWHERE TO START</p>
     </div>
     <canvas id="fire-canvas"></canvas>
   </div>
@@ -456,7 +446,6 @@
   </div>
 
   <script>
-    // PREVIOUSLY PROVIDED GOOGLE DRIVE LINKS
     const MY_DRIVE_LINKS = [
       "https://drive.google.com/file/d/17SnIM0VFmukUc3Mrp4J1nnxti8TEQqgv/view?usp=drivesdk",
       "https://drive.google.com/file/d/19ovY2YpHBDyL50K6bW-BvSOarqrmFADB/view?usp=drivesdk",
@@ -469,23 +458,16 @@
       "https://drive.google.com/file/d/1_amoc9VPsEb8wF77LNrLg5rb32yYkC0p/view?usp=drivesdk"
     ];
 
+    // FAST DIRECT CDN CONVERTER
     function convertDriveLink(url, fileIdFallback) {
       if (!url) return "https://picsum.photos/400/500";
       const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
       const id = (match && match[1]) ? match[1] : fileIdFallback;
       if (id) {
-        return `https://drive.google.com/uc?export=view&id=${id}`;
+        // High-speed Google CDN thumbnail cache
+        return `https://drive.google.com/thumbnail?id=${id}&sz=w800`;
       }
       return url;
-    }
-
-    function setupImgFallback(imgElement, fileId) {
-      imgElement.onerror = function() {
-        if (!this.getAttribute('data-tried-lh3')) {
-          this.setAttribute('data-tried-lh3', 'true');
-          this.src = `https://lh3.googleusercontent.com/d/${fileId}`;
-        }
-      };
     }
 
     function loadUserPhotos() {
@@ -500,32 +482,28 @@
         const img = document.createElement('img');
         img.className = 'ribbon-img';
         img.src = convertedUrl;
-        if (fileId) setupImgFallback(img, fileId);
         ribbonContainer.appendChild(img);
 
-        if (idx === 0) setImgWithFallback('polaroid-1', convertedUrl, fileId);
-        if (idx === 1) setImgWithFallback('polaroid-2', convertedUrl, fileId);
-        if (idx === 2) setImgWithFallback('polaroid-3', convertedUrl, fileId);
+        if (idx === 0) setImgSrc('polaroid-1', convertedUrl);
+        if (idx === 1) setImgSrc('polaroid-2', convertedUrl);
+        if (idx === 2) setImgSrc('polaroid-3', convertedUrl);
 
-        if (idx === 3) setImgWithFallback('scrapbook-img-1', convertedUrl, fileId);
-        if (idx === 4) setImgWithFallback('scrapbook-img-2', convertedUrl, fileId);
-        if (idx === 5) setImgWithFallback('scrapbook-img-3', convertedUrl, fileId);
-        if (idx === 6) setImgWithFallback('scrapbook-img-4', convertedUrl, fileId);
-        if (idx === 7) setImgWithFallback('scrapbook-img-5', convertedUrl, fileId);
+        if (idx === 3) setImgSrc('scrapbook-img-1', convertedUrl);
+        if (idx === 4) setImgSrc('scrapbook-img-2', convertedUrl);
+        if (idx === 5) setImgSrc('scrapbook-img-3', convertedUrl);
+        if (idx === 6) setImgSrc('scrapbook-img-4', convertedUrl);
+        if (idx === 7) setImgSrc('scrapbook-img-5', convertedUrl);
       });
     }
 
-    function setImgWithFallback(elemId, src, fileId) {
+    function setImgSrc(elemId, src) {
       const el = document.getElementById(elemId);
-      if (el) {
-        el.src = src;
-        if (fileId) setupImgFallback(el, fileId);
-      }
+      if (el) el.src = src;
     }
 
     loadUserPhotos();
 
-    // NAVIGATION SYSTEM
+    // GLOBAL NAVIGATION SYSTEM
     let currentSection = 1;
     const totalSections = 5;
 
@@ -550,23 +528,39 @@
       }
     }
 
-    const navBtn = document.getElementById('next-btn');
-    const handleNavTrigger = (e) => {
-      e.preventDefault();
+    document.getElementById('next-btn').onclick = function(e) {
       e.stopPropagation();
       goToNextSection();
     };
-    navBtn.addEventListener('click', handleNavTrigger);
+
+    // DIRECT SECTION 1 TAP EVENT
+    const sec1 = document.getElementById('sec-1');
+    let section1Triggered = false;
+
+    sec1.onclick = function(e) {
+      if (section1Triggered) return;
+      section1Triggered = true;
+
+      const centerX = e.clientX || window.innerWidth / 2;
+      const centerY = e.clientY || window.innerHeight / 2;
+
+      for (let i = 0; i < 100; i++) {
+        particles.push(new SparkleParticle(centerX, centerY));
+      }
+
+      setTimeout(() => {
+        goToNextSection();
+      }, 500);
+    };
 
     // SKETCHBOOK PAGE FLIP
     document.querySelectorAll('.page').forEach(pageEl => {
-      const handlePageFlip = () => {
-        pageEl.classList.toggle('flipped');
+      pageEl.onclick = function() {
+        this.classList.toggle('flipped');
         const book = document.getElementById('main-book');
         const anyFlipped = document.querySelectorAll('.page.flipped').length > 0;
         book.style.transform = anyFlipped ? 'translateX(0%)' : 'translateX(-25%)';
       };
-      pageEl.addEventListener('click', handlePageFlip);
     });
 
     // SECTION 1: SPARKLING / FIREWORKS
@@ -575,10 +569,10 @@
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    window.addEventListener('resize', () => {
+    window.onresize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-    });
+    };
 
     let particles = [];
 
@@ -624,30 +618,6 @@
     }
     animateSparkles();
 
-    // IMPROVED 21 TAP TRIGGER
-    let isTransitioning = false;
-    const clickBox = document.getElementById('click-box');
-
-    function trigger21Tap(e) {
-      if (isTransitioning) return;
-      isTransitioning = true;
-
-      const rect = clickBox.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-
-      for (let i = 0; i < 150; i++) {
-        particles.push(new SparkleParticle(centerX, centerY));
-      }
-
-      setTimeout(() => {
-        goToNextSection();
-      }, 600);
-    }
-
-    clickBox.addEventListener('pointerdown', trigger21Tap);
-    clickBox.addEventListener('click', trigger21Tap);
-
     // SECTION 2: FLOATING BALLOONS
     function initBalloons() {
       const container = document.getElementById('balloon-container');
@@ -691,4 +661,12 @@
 
       card.addEventListener('mousedown', startDrag);
       document.addEventListener('mousemove', doDrag);
-      document.a
+      document.addEventListener('mouseup', stopDrag);
+
+      card.addEventListener('touchstart', startDrag, { passive: true });
+      document.addEventListener('touchmove', doDrag, { passive: true });
+      document.addEventListener('touchend', stopDrag);
+    });
+  </script>
+</body>
+</html>
