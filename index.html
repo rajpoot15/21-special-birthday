@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>21st Birthday Special</title>
   
-  <!-- Font Awesome & Google Fonts -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Montserrat:wght@400;700;900&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
 
@@ -14,6 +13,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     html, body {
@@ -26,50 +26,51 @@
     }
 
     .section {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      display: flex;
+      display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.8s ease, visibility 0.8s ease;
       z-index: 1;
       overflow: hidden;
     }
 
     .section.active {
-      opacity: 1;
-      visibility: visible;
+      display: flex !important;
       z-index: 10;
     }
 
-    /* Navigation Controls */
+    /* Navigation Button */
     .nav-btn {
       position: fixed;
       bottom: 25px;
       right: 25px;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
       color: #fff;
-      padding: 12px 24px;
+      padding: 14px 28px;
       border-radius: 30px;
       cursor: pointer;
       font-weight: 700;
       letter-spacing: 1px;
-      z-index: 9999;
-      transition: all 0.3s ease;
+      z-index: 999999;
+      pointer-events: auto !important;
+      touch-action: manipulation;
     }
 
-    .nav-btn:hover {
+    .nav-btn:active {
       background: #ffffff;
       color: #000;
-      transform: scale(1.05);
+      transform: scale(0.95);
+    }
+
+    .nav-btn.hidden-btn {
+      display: none !important;
     }
 
     /* SECTION 1: COUNTDOWN */
@@ -77,23 +78,30 @@
       background: radial-gradient(circle, #1a1c23 0%, #0b0c10 100%);
     }
 
+    .number-box {
+      text-align: center;
+      position: relative;
+      z-index: 100;
+      cursor: pointer;
+      touch-action: manipulation;
+      padding: 40px;
+      pointer-events: auto !important;
+    }
+
     #age-number {
       font-size: clamp(8rem, 20vw, 16rem);
       font-weight: 900;
-      cursor: pointer;
       user-select: none;
-      transition: transform 0.3s ease;
+      transition: transform 0.2s ease;
       background: linear-gradient(180deg, #ffffff 0%, #888888 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       line-height: 1;
-      position: relative;
-      z-index: 20;
-      touch-action: manipulation;
+      pointer-events: none;
     }
 
-    #age-number:hover {
-      transform: scale(1.08);
+    .number-box:active #age-number {
+      transform: scale(0.9);
     }
 
     .sub-text {
@@ -111,12 +119,24 @@
       width: 100vw;
       height: 100vh;
       pointer-events: none;
-      z-index: 5;
+      z-index: 50;
     }
 
-    /* SECTION 2: BALLOONS & WISH */
+    /* SECTION 2: BALLOONS */
     #sec-2 {
       background: #0f1016;
+      position: relative;
+    }
+
+    #balloon-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
     }
 
     .bday-title {
@@ -135,10 +155,10 @@
     .balloon {
       position: absolute;
       bottom: -100px;
-      width: 50px;
-      height: 65px;
+      width: 55px;
+      height: 70px;
       border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-      animation: floatUp 8s linear infinite;
+      animation: floatUp 7s linear infinite;
       z-index: 1;
     }
 
@@ -146,15 +166,15 @@
       content: "";
       position: absolute;
       bottom: -12px;
-      left: 23px;
+      left: 26px;
       width: 2px;
-      height: 15px;
-      background: rgba(255, 255, 255, 0.5);
+      height: 18px;
+      background: rgba(255, 255, 255, 0.6);
     }
 
     @keyframes floatUp {
       0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-110vh) rotate(20deg); opacity: 0; }
+      100% { transform: translateY(-120vh) rotate(25deg); opacity: 0; }
     }
 
     /* SECTION 3: CURVED CAROUSEL */
@@ -199,6 +219,7 @@
       transition: all 0.4s ease;
       flex-shrink: 0;
       box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+      background-color: #ddd;
     }
 
     .ribbon-img:hover {
@@ -229,6 +250,7 @@
       cursor: grab;
       user-select: none;
       transition: transform 0.2s ease;
+      touch-action: none;
     }
 
     .polaroid:active {
@@ -241,6 +263,7 @@
       height: 180px;
       object-fit: cover;
       pointer-events: none;
+      background-color: #eee;
     }
 
     .polaroid .caption {
@@ -288,6 +311,7 @@
       transform-style: preserve-3d;
       transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
       cursor: pointer;
+      touch-action: manipulation;
     }
 
     .page-front, .page-back {
@@ -332,156 +356,17 @@
       border-radius: 8px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.12);
       margin-bottom: 10px;
-    }
-
-    /* SECTION 6: TAP 21 HEART & SCRATCH CARD REVEAL */
-    #sec-6 {
-      background: radial-gradient(circle, #2d122d 0%, #0b0c10 100%);
-      text-align: center;
-      position: relative;
-    }
-
-    .heart-tap-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-
-    .heart-tap-container.hidden {
-      opacity: 0;
-      pointer-events: none;
-      transform: scale(0.5);
-      position: absolute;
-    }
-
-    .main-heart {
-      font-size: clamp(6rem, 15vw, 10rem);
-      color: #ff4d6d;
-      cursor: pointer;
-      user-select: none;
-      filter: drop-shadow(0 0 25px rgba(255, 77, 109, 0.6));
-      transition: transform 0.1s ease;
-      animation: pulse 1.5s infinite alternate;
-    }
-
-    .main-heart:active {
-      transform: scale(0.85);
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.08); }
-    }
-
-    .heart-counter {
-      font-size: 2rem;
-      font-weight: 900;
-      margin-top: 15px;
-      letter-spacing: 2px;
-      color: #ff85a1;
-    }
-
-    .heart-instruction {
-      font-size: 1rem;
-      opacity: 0.7;
-      letter-spacing: 3px;
-      margin-top: 8px;
-    }
-
-    .pop-heart {
-      position: absolute;
-      font-size: 2rem;
-      color: #ff4d6d;
-      pointer-events: none;
-      animation: floatUpPop 1s ease-out forwards;
-    }
-
-    @keyframes floatUpPop {
-      0% { opacity: 1; transform: translateY(0) scale(1); }
-      100% { opacity: 0; transform: translateY(-100px) scale(1.5); }
-    }
-
-    .scratch-container {
-      opacity: 0;
-      visibility: hidden;
-      transform: scale(0.8);
-      transition: all 0.8s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .scratch-container.visible {
-      opacity: 1;
-      visibility: visible;
-      transform: scale(1);
-    }
-
-    .scratch-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      margin-bottom: 20px;
-      color: #fff;
-    }
-
-    .scratch-card-box {
-      position: relative;
-      width: min(85vw, 360px);
-      height: 220px;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 20px rgba(255, 183, 3, 0.3);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .scratch-reveal-content {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .scratch-reveal-content i {
-      font-size: 3rem;
-      margin-bottom: 10px;
-      color: #fff;
-    }
-
-    .scratch-reveal-content p {
-      font-family: 'Caveat', cursive;
-      font-size: clamp(1.6rem, 5vw, 2.2rem);
-      line-height: 1.3;
-    }
-
-    #scratch-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      cursor: pointer;
-      touch-action: none;
+      background-color: #eee;
     }
   </style>
 </head>
 <body>
 
-  <button class="nav-btn" id="next-btn" onclick="nextSection(event)">Next Stage &#x2192;</button>
+  <button class="nav-btn" id="next-btn">Next Stage →</button>
 
   <!-- SECTION 1: COUNTDOWN -->
   <div id="sec-1" class="section active">
-    <div style="text-align: center; z-index: 20; position: relative;">
+    <div class="number-box" id="click-box">
       <h1 id="age-number">21</h1>
       <p class="sub-text">CLICK THE NUMBER</p>
     </div>
@@ -491,7 +376,7 @@
   <!-- SECTION 2: BALLOONS & WISH -->
   <div id="sec-2" class="section">
     <div id="balloon-container"></div>
-    <h1 class="bday-title">Happy Birthday! <br>&#127880; &#127874; &#127881;</h1>
+    <h1 class="bday-title">Happy Birthday! <br>🎈 🎂 🎉</h1>
   </div>
 
   <!-- SECTION 3: CURVED CAROUSEL -->
@@ -506,17 +391,17 @@
   <!-- SECTION 4: POLAROID BOARD -->
   <div id="sec-4" class="section">
     <h2 class="stage-title">Special Memories</h2>
-    <div class="polaroid" style="top: 25%; left: 20%; transform: rotate(-6deg);">
+    <div class="polaroid" style="top: 25%; left: 10%; transform: rotate(-6deg);">
       <img id="polaroid-1" src="" alt="Photo 1">
-      <div class="caption">Cutie &#10084;&#65039;</div>
+      <div class="caption">Cutie ❤️</div>
     </div>
-    <div class="polaroid" style="top: 22%; left: 55%; transform: rotate(8deg);">
+    <div class="polaroid" style="top: 22%; left: 45%; transform: rotate(8deg);">
       <img id="polaroid-2" src="" alt="Photo 2">
-      <div class="caption">Dream Girl &#10024;</div>
+      <div class="caption">Dream Girl ✨</div>
     </div>
-    <div class="polaroid" style="top: 52%; left: 38%; transform: rotate(-3deg);">
+    <div class="polaroid" style="top: 52%; left: 28%; transform: rotate(-3deg);">
       <img id="polaroid-3" src="" alt="Photo 3">
-      <div class="caption">Sunshine &#9728;&#65039;</div>
+      <div class="caption">Sunshine ☀️</div>
     </div>
   </div>
 
@@ -524,7 +409,7 @@
   <div id="sec-5" class="section">
     <div class="book-wrapper">
       <div class="book" id="main-book">
-        <div class="page" style="z-index: 4;" onclick="flipPage(this)">
+        <div class="page" style="z-index: 4;">
           <div class="page-front">
             <h2 class="scrap-title">Sketchbook for Special Person</h2>
             <p style="text-align: center; opacity: 0.7; font-size: 0.95rem;">Tap to flip through pages...</p>
@@ -535,7 +420,7 @@
           </div>
         </div>
 
-        <div class="page" style="z-index: 3;" onclick="flipPage(this)">
+        <div class="page" style="z-index: 3;">
           <div class="page-front">
             <p class="scrap-title" style="color: #e63946;">For You ❤️</p>
             <img id="scrapbook-img-1" class="sketch-img" src="" alt="Memory 1">
@@ -546,7 +431,7 @@
           </div>
         </div>
 
-        <div class="page" style="z-index: 2;" onclick="flipPage(this)">
+        <div class="page" style="z-index: 2;">
           <div class="page-front">
             <p class="scrap-title">Unforgettable</p>
             <img id="scrapbook-img-3" class="sketch-img" src="" alt="Memory 3">
@@ -557,7 +442,7 @@
           </div>
         </div>
 
-        <div class="page" style="z-index: 1;" onclick="flipPage(this)">
+        <div class="page" style="z-index: 1;">
           <div class="page-front">
             <p class="scrap-title">Treasured Days</p>
             <img id="scrapbook-img-5" class="sketch-img" src="" alt="Memory 5">
@@ -570,39 +455,18 @@
     </div>
   </div>
 
-  <!-- SECTION 6: TAP 21 HEART & SCRATCH CARD REVEAL -->
-  <div id="sec-6" class="section">
-    <div class="heart-tap-container" id="heart-box">
-      <div class="main-heart" onclick="tapHeart(event)">❤️</div>
-      <div class="heart-counter" id="tap-count">0 / 21</div>
-      <div class="heart-instruction">TAP THE HEART 21 TIMES!</div>
-    </div>
-
-    <div class="scratch-container" id="scratch-box">
-      <h2 class="scratch-title">A Special Surprise For You 🎁</h2>
-      <div class="scratch-card-box">
-        <div class="scratch-reveal-content">
-          <i class="fa-solid fa-ice-cream"></i>
-          <p>Hum dono jab bhi milenge, ice cream date pe chalenge! 🍦❤️</p>
-        </div>
-        <canvas id="scratch-canvas"></canvas>
-      </div>
-      <p style="opacity: 0.7; font-size: 0.9rem; margin-top: 15px;">Scratch the card to reveal your card! ✨</p>
-    </div>
-  </div>
-
   <script>
-    // 📸 GOOGLE DRIVE DIRECT PHOTO LINKS
+    // RELIABLE PUBLIC PLACEHOLDER IMAGES
     const MY_PHOTOS = [
-      "https://lh3.googleusercontent.com/d/17SnIM0VFmukUc3Mrp4J1nnxti8TEQqgv",
-      "https://lh3.googleusercontent.com/d/19ovY2YpHBDyL50K6bW-BvSOarqrmFADB",
-      "https://lh3.googleusercontent.com/d/1zL60ETsQ2l6l-ERUMjGRHbvra6Uuk4Kj",
-      "https://lh3.googleusercontent.com/d/1kYSHEoRryhLcgDETySMs83HvWXpPOxkZ",
-      "https://lh3.googleusercontent.com/d/1wiuBQn_5xZ8uH4hihRZ-sgxGQAmW5dE0",
-      "https://lh3.googleusercontent.com/d/1Ghnt96KotZnX3CIleIV1_KE3MSgWoOcn",
-      "https://lh3.googleusercontent.com/d/1WLFj6qpgsJGP0VY6PS6E1r-O7JE_FNMg",
-      "https://lh3.googleusercontent.com/d/1zVjt3WYorO_0eJPP-JWx7HqNrB_xRpuU",
-      "https://lh3.googleusercontent.com/d/1_amoc9VPsEb8wF77LNrLg5rb32yYkC0p"
+      "https://picsum.photos/id/1025/400/500",
+      "https://picsum.photos/id/64/400/500",
+      "https://picsum.photos/id/1062/400/500",
+      "https://picsum.photos/id/338/400/500",
+      "https://picsum.photos/id/349/400/500",
+      "https://picsum.photos/id/1011/400/500",
+      "https://picsum.photos/id/1027/400/500",
+      "https://picsum.photos/id/1069/400/500",
+      "https://picsum.photos/id/325/400/500"
     ];
 
     function loadUserPhotos() {
@@ -628,96 +492,182 @@
 
     loadUserPhotos();
 
-    // NAVIGATION SYSTEM
+    // NAVIGATION SYSTEM (MAX 5 SECTIONS)
     let currentSection = 1;
-    const totalSections = 6;
+    const totalSections = 5;
 
-    function nextSection(e) {
-      if (e) {
-        e.stopPropagation();
-        e.preventDefault();
+    function goToNextSection() {
+      const currentEl = document.getElementById(`sec-${currentSection}`);
+      if (currentEl) currentEl.classList.remove('active');
+
+      if (currentSection < totalSections) {
+        currentSection++;
       }
-      document.getElementById(`sec-${currentSection}`).classList.remove('active');
-      currentSection = (currentSection % totalSections) + 1;
-      document.getElementById(`sec-${currentSection}`).classList.add('active');
+
+      const nextEl = document.getElementById(`sec-${currentSection}`);
+      if (nextEl) nextEl.classList.add('active');
 
       if (currentSection === 2) initBalloons();
-    }
 
-    // SKETCHBOOK PAGE FLIP
-    function flipPage(pageEl) {
-      pageEl.classList.toggle('flipped');
-      const book = document.getElementById('main-book');
-      const anyFlipped = document.querySelectorAll('.page.flipped').length > 0;
-      
-      if (anyFlipped) {
-        book.style.transform = 'translateX(0%)';
+      const navBtn = document.getElementById('next-btn');
+      if (currentSection === totalSections) {
+        navBtn.classList.add('hidden-btn');
       } else {
-        book.style.transform = 'translateX(-25%)';
+        navBtn.classList.remove('hidden-btn');
       }
     }
 
-    // SECTION 1: PARTICLE BURST
+    const navBtn = document.getElementById('next-btn');
+    const handleNavTrigger = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      goToNextSection();
+    };
+    navBtn.addEventListener('click', handleNavTrigger);
+    navBtn.addEventListener('touchend', handleNavTrigger);
+
+    // SKETCHBOOK PAGE FLIP
+    document.querySelectorAll('.page').forEach(pageEl => {
+      const handlePageFlip = () => {
+        pageEl.classList.toggle('flipped');
+        const book = document.getElementById('main-book');
+        const anyFlipped = document.querySelectorAll('.page.flipped').length > 0;
+        book.style.transform = anyFlipped ? 'translateX(0%)' : 'translateX(-25%)';
+      };
+      pageEl.addEventListener('click', handlePageFlip);
+    });
+
+    // SECTION 1: SPARKLING / FIREWORKS
     const canvas = document.getElementById('fire-canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
     let particles = [];
-    class Particle {
+
+    class SparkleParticle {
       constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.size = Math.random() * 8 + 3;
-        this.speedX = (Math.random() - 0.5) * 8;
-        this.speedY = (Math.random() - 0.5) * 8 - 2;
-        this.color = `hsl(${Math.random() * 40 + 10}, 100%, 55%)`;
-        this.life = 1;
+        this.size = Math.random() * 6 + 2;
+        this.speedX = (Math.random() - 0.5) * 15;
+        this.speedY = (Math.random() - 0.5) * 15 - 3;
+        this.color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 65%)`;
+        this.alpha = 1;
+        this.decay = Math.random() * 0.02 + 0.015;
+        this.gravity = 0.15;
       }
+
       update() {
         this.x += this.speedX;
         this.y += this.speedY;
-        this.size *= 0.95;
-        this.life -= 0.02;
+        this.speedY += this.gravity;
+        this.alpha -= this.decay;
       }
+
       draw() {
+        ctx.save();
+        ctx.globalAlpha = Math.max(this.alpha, 0);
         ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
+        ctx.restore();
       }
     }
 
-    function animateParticles() {
+    function animateSparkles() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach((p, index) => {
         p.update();
         p.draw();
-        if (p.life <= 0 || p.size <= 0.5) particles.splice(index, 1);
+        if (p.alpha <= 0) particles.splice(index, 1);
       });
-      requestAnimationFrame(animateParticles);
+      requestAnimationFrame(animateSparkles);
     }
-    animateParticles();
+    animateSparkles();
 
-    function triggerBurst(e) {
-      if (e) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-      const rect = document.getElementById('age-number').getBoundingClientRect();
-      for (let i = 0; i < 80; i++) {
-        particles.push(new Particle(rect.left + rect.width / 2, rect.top + rect.height / 2));
-      }
-    }
+    let isProcessingClick = false;
+    const clickBox = document.getElementById('click-box');
 
-    // DIRECT HARD-BINDING TO PREVENT MOBILE ADVANCEMENT
-    const ageNumEl = document.getElementById('age-number');
-    ['click', 'touchstart', 'pointerdown'].forEach(evt => {
-      ageNumEl.addEventListener(evt, triggerBurst, { passive: false });
+    const handle21Tap = (e) => {
+      if (isProcessingClick) return;
+      isProcessingClick = true;
+
+      const rect = clickBox.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      for (let i = 0; i < 150; i++) {
+        particles.push(new SparkleParticle(centerX, centerY));
+      }
+
+      setTimeout(() => {
+        goToNextSection();
+        isProcessingClick = false;
+      }, 1000);
+    };
+
+    clickBox.addEventListener('click', handle21Tap);
+    clickBox.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      handle21Tap(e);
     });
 
-    // SECTION 2: BALLOONS GENERATOR
+    // SECTION 2: FLOATING BALLOONS
     function initBalloons() {
       const container = document.getElementById('balloon-container');
       container.innerHTML = '';
-      const colors = ['
+      const colors = ['#ff4d6d', '#ffb703', '#06d6a0', '#118ab2', '#7209b7', '#e74c3c'];
+      
+      for (let i = 0; i < 30; i++) {
+        let b = document.createElement('div');
+        b.className = 'balloon';
+        b.style.left = `${Math.random() * 90 + 5}%`;
+        b.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        b.style.animationDelay = `${Math.random() * 5}s`;
+        b.style.animationDuration = `${5 + Math.random() * 4}s`;
+        container.appendChild(b);
+      }
+    }
+
+    // SECTION 4: DRAGGABLE POLAROIDS
+    const polaroids = document.querySelectorAll('.polaroid');
+    polaroids.forEach(card => {
+      let isDragging = false;
+      let offsetX, offsetY;
+
+      const startDrag = (e) => {
+        isDragging = true;
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+        offsetX = clientX - card.offsetLeft;
+        offsetY = clientY - card.offsetTop;
+      };
+
+      const doDrag = (e) => {
+        if (!isDragging) return;
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+        card.style.left = `${clientX - offsetX}px`;
+        card.style.top = `${clientY - offsetY}px`;
+      };
+
+      const stopDrag = () => isDragging = false;
+
+      card.addEventListener('mousedown', startDrag);
+      document.addEventListener('mousemove', doDrag);
+      document.addEventListener('mouseup', stopDrag);
+
+      card.addEventListener('touchstart', startDrag, { passive: true });
+      document.addEventListener('touchmove', doDrag, { passive: true });
+      document.addEventListener('touchend', stopDrag);
+    });
+  </script>
+</body>
+</html>
